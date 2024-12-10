@@ -43,5 +43,5 @@ async def health_check() -> Dict:
 if __name__ == "__main__":
     import uvicorn
     # Obtener el puerto de la variable de entorno WEBSITES_PORT o usar 80 por defecto
-    port = int(os.environ.get("WEBSITES_PORT", 80))
+    port = int(os.environ.get("WEBSITES_PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
