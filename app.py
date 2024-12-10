@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 @app.post("/")
-async def root(body: Any):
+async def root(body: Dict):
     return body
 
 @app.get("/health")
