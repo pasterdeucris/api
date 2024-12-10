@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any
+import os
 
 app = FastAPI()
 
@@ -20,4 +21,6 @@ async def root(body: Any):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Obtener el puerto de la variable de entorno WEBSITES_PORT o usar 80 por defecto
+    port = int(os.environ.get("WEBSITES_PORT", 80))
+    uvicorn.run(app, host="0.0.0.0", port=port)
