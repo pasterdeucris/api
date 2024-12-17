@@ -115,7 +115,7 @@ def read_requests():
     
     return requests
 
-@app.post("/")
+@app.post("/api")
 async def root(body: Dict):
     logger.info(f"Processing POST request with body: {body}")
     save_request(body)
