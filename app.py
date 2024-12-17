@@ -115,12 +115,17 @@ def read_requests():
     
     return requests
 
-@app.post("/api")
+@app.post("/")
 async def root(body: Dict):
     logger.info(f"Processing POST request with body: {body}")
     save_request(body)
     return body
-
+    
+@app.get("/")
+async def root_get():
+    logger.info("Processing GET request")
+    return {"message": "This is a GET request"}
+    
 @app.get("/health")
 async def health_check() -> Dict:
     """
@@ -139,7 +144,8 @@ async def health_check() -> Dict:
     }
     logger.info(f"Health check performed: {response}")
     return response
-
+    
+    
 @app.get("/requests")
 async def get_requests():
     """Endpoint para obtener todas las peticiones guardadas"""
