@@ -3,12 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any, Dict
 import os
+import json
 from datetime import datetime
 
 app = FastAPI()
 
 # Variables para el healthcheck
 START_TIME = datetime.now()
+REQUESTS_FILE = "requests.txt"
 
 # Configuración de CORS
 app.add_middleware(
@@ -19,8 +21,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def save_request(request_data: Dict):
+    """Guarda la petición en el archivo de texto"""
+    record = {
+        "timestamp": datetime.now().isoformat(),
+        "data": request_data
+    }
+    
+    with open(REQUESTS_FILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record) + "\n")
+
+def read_requests():
+    """Lee todas las peticiones del archivo"""
+    if not os.path.exists(REQUESTS_FILE):
+        return []
+    
+    requests = []
+    with open(REQUESTS_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                requests.append(json.loads(line))
+    return requests
+
 @app.post("/")
 async def root(body: Dict):
+    save_request(body)
     return body
 
 @app.get("/health")
@@ -39,6 +64,11 @@ async def health_check() -> Dict:
         "service": "FastAPI Server",
         "version": "1.0.0"
     }
+
+@app.get("/requests")
+async def get_requests():
+    """Endpoint para obtener todas las peticiones guardadas"""
+    return read_requests()
 
 if __name__ == "__main__":
     import uvicorn
